@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="itwillbs.p2c3.class_will.mapper.MainMapper">
+
+
+	<select id="selectBigCategory" resultType="map">
+		SELECT *
+		FROM common2
+		WHERE common1_code = 'CLC'
+		AND code_hide LIKE 'N';
+	</select>
+	
+	<select id="selectSmallCategory" resultType="map">
+		SELECT *
+		FROM common3
+		WHERE common1_code = 'CLC'
+		AND code_hide LIKE 'N';
+	</select>
+	
+	<select id="selectLocalCate" resultType="map">
+		SELECT *
+		FROM common2
+		WHERE common1_code = 'LC'
+		AND code_hide LIKE 'N';
+	</select>
+
+	<insert id="insertKeyword">
+		INSERT INTO search_word(search_word_keyword, search_word_date)
+		VALUES(#{keyword}, #{searchDateTime})
+	</insert>
+	
+	<select id="selectTop10Class">
+		SELECT c.class_code
+		     , c.class_name
+		     , c.class_thumnail
+		     , c.class_hashtag
+		     , c.class_price
+		     , c2.code_value AS big_category
+		     , c3.code_value AS small_category
+		     , m.member_nickname
+		     , m.member_img
+		     , lc.code_value AS local_name  
+		FROM (
+		    SELECT 
+		        p.class_code, 
+		        COUNT(*) AS count
+		    FROM pay p
+		    JOIN class c ON p.class_code = c.class_code
+		    WHERE c.class_active = 'Y'
+		      AND c.class_regist_status = '2'
+		      AND c.class_hide = '1'
+		    GROUP BY p.class_code
+		    ORDER BY count DESC
+		    LIMIT 10
+		) AS top_classes
+		JOIN class c ON c.class_code = top_classes.class_code
+		JOIN common2 c2 ON c.class_big_category = c2.common2_code AND c2.common1_code = 'CLC'
+		JOIN common3 c3 ON c.class_small_category = c3.common3_code AND c3.common2_code = c2.common2_code AND c3.common1_code = 'CLC'
+		JOIN MEMBER m ON c.member_code = m.member_code
+		JOIN common2 lc ON c.common2_code = lc.common2_code AND lc.common1_code = 'LC';
+	</select>
+	
+	
+	<select id="selectNewClass">
+		SELECT c.class_code
+		     , c.class_name
+		     , c.class_thumnail 
+		     , c.class_hashtag
+		     , c.class_price 
+		     , c2.code_value AS big_category 
+		     , c3.code_value AS small_category 
+		     , m.member_nickname
+		     , m.member_img
+		     , lc.code_value AS local_name 
+		 FROM class c 
+		 JOIN common2 c2 
+		   ON c.class_big_category = c2.common2_code 
+		  AND c2.common1_code = 'CLC'
+		 JOIN common3 c3 
+		   ON c.class_small_category = c3.common3_code 
+		  AND c3.common2_code = c2.common2_code 
+		  AND c3.common1_code = 'CLC'
+		 JOIN MEMBER m 
+		   ON c.member_code = m.member_code
+		 JOIN common2 lc 
+		   ON c.common2_code = lc.common2_code 
+		  AND lc.common1_code = 'LC'
+		WHERE c.class_active = 'Y'
+		AND c.class_regist_status = '2'
+		AND c.class_hide = '1'
+		ORDER BY class_code DESC 
+		LIMIT 8;
+	</select>
+	
+	<select id="selectVisitIp" resultType="map">
+		SELECT visit_date, ip_address
+		  FROM visit_logs
+		 WHERE visit_date = #{visitDate}
+           AND ip_address = #{ip}
+	</select>
+
+	<insert id="insertVisitIp">
+		INSERT INTO visit_logs(visit_date, ip_address)
+		VALUES (#{visitDate}, #{ip})
+	</insert>
+	
+	
+	<select id="selectToday" resultType="map">
+		SELECT visit_date, visit_count
+		  FROM daily_visit
+	  	 WHERE visit_date = #{visitDate}
+	</select>
+	
+	<insert id="insertDailyVisit">
+		INSERT INTO daily_visit(visit_date, visit_count)
+		VALUES (#{visitDate}, 1) 
+	</insert>
+	
+	<update id="updateDailyVisit">
+		<selectKey keyProperty="visit_count" resultType="int" order="BEFORE">
+			SELECT IFNULL(visit_count, 0)  -- visit_count 최대값 조회(null 이면 기본값 0 지정) 
+			  FROM daily_visit
+			 WHERE visit_date = #{visit_date}
+		</selectKey> 
+		UPDATE daily_visit
+		SET visit_count = #{visit_count} + 1
+		WHERE visit_date = #{visit_date}
+	</update>
+	
+	<select id="selectLikeClass" resultType="map">
+		SELECT like_class_code, member_code, class_code
+		  FROM like_class
+		 WHERE member_code = #{member_code}
+	</select>
+	
+	<select id="selectKeyword" resultType="map">
+		SELECT c.class_code
+			 , class_name
+			 , c2.code_value AS class_big_category
+			 , c3.code_value AS class_small_category
+			 , lc.code_value AS local_name
+			 , c2.common2_code
+			 , c3.common3_code
+			 , class_thumnail
+			 , class_image
+			 , class_ex
+			 , class_location
+			 , class_creator_explain
+			 , class_hide
+			 , class_price
+			 , class_map_x
+			 , class_map_y
+			 , class_hashtag
+			 , m.member_nickname
+			 , m.member_img
+		  FROM class c
+		  JOIN common2 c2 
+		    ON c.class_big_category = c2.common2_code 
+		   AND c2.common1_code = 'CLC'
+		  JOIN common3 c3 
+		    ON c.class_small_category = c3.common3_code 
+		   AND c3.common2_code = c2.common2_code 
+		   AND c3.common1_code = 'CLC'
+		  JOIN MEMBER m
+		    ON c.member_code = m.member_code
+		  JOIN common2 lc 
+		    ON c.common2_code = lc.common2_code 
+		   AND lc.common1_code = 'LC'
+		 WHERE (c.class_name LIKE CONCAT('%', #{keyword}, '%')
+			   OR c.class_ex LIKE CONCAT('%', #{keyword}, '%')
+			   OR c.class_location LIKE CONCAT('%', #{keyword}, '%')
+			   OR c.class_hashtag LIKE CONCAT('%', #{keyword}, '%')
+			   OR m.member_nickname LIKE CONCAT('%', #{keyword}, '%')
+			   OR c2.code_value LIKE CONCAT('%', #{keyword}, '%')
+			   OR c3.code_value LIKE CONCAT('%', #{keyword}, '%')
+			   OR lc.code_value LIKE CONCAT('%', #{keyword}, '%'))
+		   AND c.class_active = 'Y'
+		   AND c.class_regist_status = '2'
+		   AND c.class_hide = '1'; 
+	</select>
+	
+	
+	<select id="selectRecommend" resultType="string">
+		SELECT search_word_keyword
+		FROM (
+		     SELECT search_word_keyword, COUNT(*) AS keyword_count
+		     FROM search_word
+		     WHERE search_word_keyword REGEXP '^[가-힣]+$'
+		     GROUP BY search_word_keyword
+		) AS subquery
+		ORDER BY keyword_count DESC
+		LIMIT 7;
+	</select>
+	
+	
+</mapper>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="itwillbs.p2c3.class_will.mapper.ChatMapper">
+	
+	<select id="selectMemberInfo" resultType="member">
+		SELECT *
+		  FROM MEMBER
+		 WHERE member_code = #{member_code}
+	</select>
+	
+	<select id="selectMemberEmail" resultType="string">
+		SELECT member_email
+		  FROM MEMBER
+		 WHERE member_email = #{member_email}
+	</select>
+		
+	<select id="selectChatRoom" resultType="chatRoom">
+		SELECT chat_room_code, member_email1, member_email2, chat_room_status
+	      FROM chat_rooms
+	     WHERE ((member_email1 = #{sender_email} AND member_email2 = #{receiver_email})
+	           OR (member_email1 = #{receiver_email} AND member_email2 = #{sender_email}))
+	       AND chat_room_status = '1'
+	</select>
+	
+	<insert id="insertChatRoom">
+		INSERT INTO chat_rooms
+		VALUES ( null
+		     , #{sender_email}
+		     , #{receiver_email}
+		     , '1'
+		)
+	</insert>
+	
+	
+	<select id="selectRoomList" resultType="map">
+	    SELECT cr.chat_room_code
+	         , cr.member_email1
+	         , cr.member_email2
+	         , cm.message_code
+	         , cm.chat_message
+	         , cm.send_time
+	         , m.member_nickname
+	         , m.member_img
+	         , m.member_code
+	         , m.member_status
+	         , unread_count
+	      FROM chat_rooms cr
+	      JOIN MEMBER m 
+	        ON (cr.member_email1 = m.member_email OR cr.member_email2 = m.member_email)  
+	       AND m.member_email &lt;&gt; #{member_email}
+	      JOIN (
+	            SELECT chat_room_code 
+	                 , message_code 
+	                 , chat_message
+	                 , send_time
+	              FROM chat_message
+	             WHERE (chat_room_code, message_code) 
+	                   IN (
+	                        SELECT chat_room_code, MAX(message_code) AS message_code
+	                          FROM chat_message
+	                      GROUP BY chat_room_code
+	                  )
+	         ) cm 
+	        ON cr.chat_room_code = cm.chat_room_code 
+	      LEFT JOIN (
+	            SELECT chat_room_code
+	                 , COUNT(*) AS unread_count
+	              FROM chat_message
+	             WHERE is_read = 'false'
+	               AND receiver_email = #{member_email}
+	          GROUP BY chat_room_code
+	         ) unread
+	        ON cr.chat_room_code = unread.chat_room_code
+	     WHERE cr.member_email1 = #{member_email} OR cr.member_email2 = #{member_email}
+	  ORDER BY cm.send_time DESC
+	</select>
+	
+	<select id="selectUnreadMessage" resultType="map">
+		SELECT *
+		  FROM chat_message
+	 	 WHERE receiver_email = #{member_email} 
+	 	   AND is_read = 'false'
+	</select>
+
+	<select id="getChatMessageList" resultType="map">
+		SELECT *
+		FROM chat_message
+		WHERE chat_room_code = #{chat_room_code} 
+	</select>
+	
+	<insert id="insertChatMessage"  useGeneratedKeys="true" keyProperty="message_code">
+		INSERT INTO chat_message
+		VALUES (null
+			  , #{chat_room_code}
+			  , #{message_type}
+			  , #{sender_email}
+			  , #{receiver_email}
+			  , #{chat_message}
+			  , #{send_time}
+			  , #{is_read}
+		)
+	</insert>
+	
+	<select id="selectNewMessage" resultType="map" >
+		SELECT cm.message_code
+		     , cm.chat_room_code
+		     , cm.sender_email
+		     , cm.receiver_email
+		     , cm.chat_message
+		     , cm.send_time
+			 , m.member_nickname
+			 , m.member_img
+			 , m.member_code
+			 , m.member_status
+		  FROM chat_message cm
+		  JOIN MEMBER m 
+			ON cm.sender_email = m.member_email
+	     WHERE cm.message_code = #{message_code}
+	</select>
+	
+	<update id="updateIsRead">
+		UPDATE chat_message
+		   SET is_read = 'true'
+		   <choose>
+				<when test="isMultiRow eq true"> -- isMultiRow 값이 true면 chat_room_code로 검색
+					 WHERE chat_room_code = #{code}
+				</when>
+				<otherwise> -- false면 message_code로 검색
+					 WHERE message_code = #{code}
+				</otherwise>
+		   </choose>
+	</update>
+	
+<!-- 	<update id="updateIsRead"> -->
+<!-- 		UPDATE chat_message -->
+<!-- 		   SET is_read = 'true' -->
+<!-- 		 WHERE message_code = #{message_code} -->
+<!-- 	</update> -->
+
+</mapper>

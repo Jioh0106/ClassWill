@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="itwillbs.p2c3.class_will.mapper.CscMapper">
+	<!-- 게시판 상세보기 -->
+	<select id="selectBoardDetail" resultType="map" parameterType="map">
+		SELECT ${type}_code
+			, ${type}_subject
+			, ${type}_content
+			, c2.code_value AS '${type}_category'
+			, ${type}_hide
+			, ${type}_reg_date 
+		FROM ${type} ${type}
+		LEFT JOIN common2 c2 
+		ON ${type}.${type}_category = c2.common2_code 
+		AND c2.common1_code = #{common1_code}
+		WHERE ${type}_code = #{code}
+	</select>
+	
+	<select id="searchPaging" resultType="Integer">
+        SELECT ${searchType}(notice_code)
+        FROM notice
+        WHERE notice_code 
+        <if test="searchType.equals('MAX')">
+            &lt; #{code}
+        </if>
+        <if test="searchType.equals('MIN')">
+            &gt; #{code}
+        </if>
+    </select>
+    
+	<select id="selectBoardCategoryHide" resultType="map">
+		SELECT common2_code , code_value
+		FROM common2
+		WHERE common1_code = #{code}
+		AND code_hide = 'N'
+	</select>
+	
+	<select id="selectBoardCountHide" resultType="Integer">
+	    SELECT COUNT(*)
+	    FROM ${type}
+	    WHERE ${type}_hide = 'N'
+	</select>
+	
+	<select id="selectEventDetail" resultType="map">
+		SELECT *
+		FROM event
+		WHERE event_code = #{event_code}
+	</select>
+	
+	<select id="selectInviteFriendInfo" resultType="map">
+		SELECT member_code
+		      ,friend_code
+		      ,invite_code
+		 FROM invite_friend
+	    WHERE member_code = #{member_code}
+	</select>
+	
+	<select id="selectInviteFriendInfoByCode" resultType="map">
+		SELECT member_code
+		      ,friend_code
+		      ,invite_code
+		 FROM invite_friend
+	    WHERE invite_code = #{invite_code}
+	</select>
+	
+	<insert id="insertInviteCode">
+		INSERT INTO invite_friend
+		(member_code, invite_code, friend_code)
+		VALUES
+		(#{member_code}, #{invite_code}, null)
+	</insert>
+	
+	<select id="selectInviteMail">
+		SELECT *
+		FROM invite_friend_mail
+		WHERE member_email = #{friend_email}
+		AND  invite_code = #{invite_code}
+	</select>
+		
+	<insert id="insertInviteMailInfo">
+		INSERT INTO invite_friend_mail
+		(member_email, invite_code)
+		VALUES
+		(#{friend_email}, #{invite_code})
+	</insert>
+	
+	<update id="updateInviteMailInfo">
+		UPDATE invite_friend_mail
+		SET    member_email = #{friend_email}
+		WHERE  invite_code = #{invite_code}
+	</update>
+	
+	<update id="updateFriendCode">
+		UPDATE invite_friend
+		SET friend_code = #{friend_code}
+		WHERE invite_code = #{invite_code}
+	</update>	
+	
+	<update id="updateMemberCredit">
+		UPDATE MEMBER
+		SET member_credit = member_credit + 5000
+		WHERE member_code = #{member_code}
+	</update>
+	
+	<select id="selectMemberByCode">
+		SELECT *
+		FROM MEMBER
+		WHERE member_code = #{member_code}
+	</select>
+	
+	<update id="updatePointMember">
+		UPDATE MEMBER
+		SET member_credit = member_credit + #{event_point}
+		WHERE member_code = #{member_code}
+	</update>
+	
+	<select id="selectEventLogs" resultType="int">
+		SELECT count(*)
+		FROM point_logs
+		WHERE member_code = #{member_code}
+		AND   event_code = #{event_code}
+	</select>
+	
+	<insert id="insertEventLogs">
+		INSERT INTO point_logs
+		VALUES
+		(null, #{member_code}, #{event_code})
+	</insert>
+	
+	<select id="selectCscList" resultType="map" parameterType="map">
+		SELECT *
+		FROM ${type}
+		WHERE 1 = 1
+		AND ${type}_hide = 'N'
+		ORDER BY ${type}_code DESC
+		<if test="startRow != null and !startRow.equals('')">
+			LIMIT #{startRow}, #{limit}
+		</if>
+	</select>
+</mapper>
