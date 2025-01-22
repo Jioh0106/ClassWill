@@ -7,7 +7,7 @@ public class MailAuthenticator extends Authenticator{
 	PasswordAuthentication passwordAuthentication;
 
 	public MailAuthenticator() {
-		passwordAuthentication = new PasswordAuthentication("wnsgur3435@naver.com", "MWS7XMYMZWW4");
+		passwordAuthentication = new PasswordAuthentication("bonnyjo106@naver.com", "BTRZCZKR96YN");
 		
 	}
 
