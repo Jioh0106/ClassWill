@@ -245,7 +245,7 @@
     align-items: center;
     justify-content: center;
     background: black;
-    padding: 20px;
+    padding: 50px 20px 20px 20px;
     border-radius: 10px;
     position: relative;
 }

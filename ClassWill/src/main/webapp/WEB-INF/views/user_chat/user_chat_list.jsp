@@ -43,7 +43,7 @@
 	.chat-List-top {
 		font-size: 20px;
 		font-weight: bold;
-		height: 55px;
+		height: 65px;
 		padding: 10px 10px;
 		border-bottom: 1px solid #A6A6A6;
 		background:  #D5D5D5;
@@ -130,6 +130,9 @@
 		font-size: 12px;
 	}
 	
+	
+	
+	
 </style>
 
 
@@ -139,7 +142,7 @@
 	
 	<div class="user-chat container-fluid">
 		
-		<div class="chat-List-top d-flex justify-content-between align-items-center">
+		<div class="pt-4 chat-List-top d-flex justify-content-between align-items-center">
 			<div class="d-flex align-items-center">
 				<span class="px-2">채팅</span>
 				<button class="btn btn-outline-dark chat-top-filter">전체</button>

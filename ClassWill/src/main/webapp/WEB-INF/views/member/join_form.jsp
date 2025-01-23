@@ -107,10 +107,14 @@
 		border-radius: 10px;
 		background: #FF4848;
 		color: white;
+		font-size: 12px;
 	}
 	
 	.form-check-center {
-		margin-left: 30px;
+/* 		margin-left: 30px; */
+	}
+	.form-check-center .form-check-label {
+		font-size: 14px;
 	}
 	
 	.join-form-input {
@@ -134,6 +138,12 @@
 	.auth-detail {
 		color: white;
 		padding-top:  3px;
+		font-size: 12px;
+	}
+	
+	
+	.form-check .form-check-input{
+		accent-color: #86E57F;
 	}
 	
 </style>
