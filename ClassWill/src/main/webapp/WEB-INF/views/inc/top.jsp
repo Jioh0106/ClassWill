@@ -245,7 +245,7 @@
     align-items: center;
     justify-content: center;
     background: black;
-    padding: 20px;
+    padding: 50px 20px 20px 20px;
     border-radius: 10px;
     position: relative;
 }
@@ -528,7 +528,7 @@
 					<div class="">	 
                     	<c:choose>
 							<c:when test="${empty member.member_email}">
-								<a class="d-flex align-items-center" href="member-login"><i class="bi bi-person"></i> 로그인<i class="bi bi-chevron-right" style="font-size: 13px;"></i></a>
+								<a class="d-flex align-items-center" href="member-login"><i class="bi bi-person"></i>&nbsp;로그인<i class="bi bi-chevron-right" style="font-size: 13px;"></i></a>
 							</c:when>
 							<c:when test="${member.member_type eq 3}">
 								<a class="" href="admin"><i class="bi bi-gear"></i> 관리자</a>&nbsp;

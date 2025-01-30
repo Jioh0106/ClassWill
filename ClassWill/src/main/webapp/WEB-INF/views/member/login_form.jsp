@@ -45,7 +45,7 @@
 /*  		width: 900px;  */
 		padding: 30px;
 		margin-top: 50px;
-		margin-bottom: 100px;
+		margin-bottom: 200px;
 	}
 	
 	.login-social {
@@ -109,7 +109,7 @@
 	</header>
 	
 	<article>
-		<div class="container-fluid">
+		<div class="container-fluid mb-5">
 			<div class="container login-form ">
 				<div class="row gx-5"> 
 					<div class="col-lg-12 col-md-12 ">
@@ -135,7 +135,7 @@
 								<div class="regex py-2" id="regex-pwd"></div>
 							</div>
 							<input type="hidden" name="returnUrl" value="${param.returnUrl}">
-							<div align="right" style="padding-right: 11px;">
+							<div class="mb-5" align="right" style="padding-right: 11px;">
 								<p><a href="find-passwd">비밀번호 찾기</a></p>
 							</div>
 							<div class="d-grid gap-2 py-2 btnLogin">

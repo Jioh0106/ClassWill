@@ -14,24 +14,25 @@ import jakarta.mail.internet.MimeMessage;
 
 public class SendMailClient {
 	private static final String HOST = "smtp.naver.com"; 
-	private static final String PORT = "587"; 
-	private static final String SERNDER_MAIL = "wnsgur3435@naver.com"; 
+	private static final String PORT = "465"; 
+	private static final String SERNDER_MAIL = "bonnyjo106@naver.com"; 
 	
 	public void sendMail(String email, String subject, String content) {
 		try {
 			Properties props = System.getProperties();
 			
 			props.put("mail.smtp.host", HOST); // 네이버의 SMTP 서버 주소
-//		props.put("mail.smtp.port", "465"); // 네이버 메일 서버 SMTP 서버 포트 번호
 			props.put("mail.smtp.port", PORT); // 네이버 메일 서버 SMTP 서버 포트 번호
 			props.put("mail.smtp.auth", "true"); // SMTP 서버 접근 시 인증 필요 여부 설정(로그인 필요 여부)
-			props.put("mail.smtp.starttls.enable", "true"); // TLS 인증 프로토콜(보안 관련 프로토콜) 사용 여부 설정
+			props.put("mail.smtp.ssl.enable", "true");
 			props.put("mail.smtp.ssl.trust", HOST); // SSL 인증에 사용할 신뢰할 수 있는 서버 주소 지정 
 			
+			
+			// Authenticator 객체 생성
 			Authenticator authenticator = new MailAuthenticator();
-			System.out.println(authenticator.toString());
 			Session mailSession = Session.getDefaultInstance(props, authenticator);
 			
+			// 메시지 설정
 			Message message = new MimeMessage(mailSession);
 			
 			Address senderAddress = new InternetAddress(SERNDER_MAIL, "클래스윌");

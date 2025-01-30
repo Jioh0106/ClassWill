@@ -139,7 +139,7 @@
 	<a href="#" class="btn btn-light focus-ring focus-ring-success  border-3 border-success-subtle rounded-circle back-to-top"><i class="fa fa-arrow-up text-black"></i></a>  
 	
     <!-- Footer Start -->
-    <div class="class-will-bottom mt-3">
+    <div class="class-will-bottom mt-5">
 	    <div class="container-fluid text-white-50 footer pt-1 mt-3 pb-3" style="background-color: #191919;">
 	        <div class="container py-3">
 	            <div class="pb-2">
@@ -232,30 +232,30 @@
 	<script src="${pageContext.request.contextPath}/resources/js/jquery-3.7.1.js"></script>
 	<script>
 		// 챗봇
-		(function(){
-			var w=window;
-			if(w.ChannelIO){
-				return w.console.error("ChannelIO script included twice.");
-			}
-			var ch=function(){ch.c(arguments);};
-			ch.q=[];
-			ch.c=function(args){
-				ch.q.push(args);
-			};
-			w.ChannelIO=ch;
-			function l(){if(w.ChannelIOInitialized){return;}
-			w.ChannelIOInitialized=true;
-			var s=document.createElement("script");
-			s.type="text/javascript";
-			s.async=true;
-			s.src="https://cdn.channel.io/plugin/ch-plugin-web.js";
-			var x=document.getElementsByTagName("script")[0];
-			if(x.parentNode){x.parentNode.insertBefore(s,x);}}
-			if(document.readyState==="complete"){l();}
-			else{w.addEventListener("DOMContentLoaded",l);
-			w.addEventListener("load",l);}
-		})();
-		ChannelIO('boot', {
-			"pluginKey": "e4e4b39e-51da-4d32-b93f-b4e5dcacd689" // fill your plugin key
-		});		
+// 		(function(){
+// 			var w=window;
+// 			if(w.ChannelIO){
+// 				return w.console.error("ChannelIO script included twice.");
+// 			}
+// 			var ch=function(){ch.c(arguments);};
+// 			ch.q=[];
+// 			ch.c=function(args){
+// 				ch.q.push(args);
+// 			};
+// 			w.ChannelIO=ch;
+// 			function l(){if(w.ChannelIOInitialized){return;}
+// 			w.ChannelIOInitialized=true;
+// 			var s=document.createElement("script");
+// 			s.type="text/javascript";
+// 			s.async=true;
+// 			s.src="https://cdn.channel.io/plugin/ch-plugin-web.js";
+// 			var x=document.getElementsByTagName("script")[0];
+// 			if(x.parentNode){x.parentNode.insertBefore(s,x);}}
+// 			if(document.readyState==="complete"){l();}
+// 			else{w.addEventListener("DOMContentLoaded",l);
+// 			w.addEventListener("load",l);}
+// 		})();
+// 		ChannelIO('boot', {
+// 			"pluginKey": "e4e4b39e-51da-4d32-b93f-b4e5dcacd689" // fill your plugin key
+// 		});		
 	</script>
